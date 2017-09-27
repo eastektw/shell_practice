@@ -1,0 +1,24 @@
+#!/bin/csh
+##edited by JEFF 2017/09/21
+cd $1
+ls -dF *aaa* > $1/filetmp   #抓取有aaa的目錄名
+set Original = `pwd`
+set Original = "$Original/"
+set i=1
+set Only_aaa_Folder = ("` cat $1/filetmp |  grep "/" | grep -v "111"`")
+set Only_aaa_Folder_count = $#Only_aaa_Folder #抓取只包含aaa目錄名 排除有111的目錄名
+while ( $i <= $Only_aaa_Folder_count )                                     #先列出只包含aaa的目錄名
+ echo "$Original$Only_aaa_Folder[$i]"
+ @ i++
+end
+set j=1
+ls -dF *111* > $1/filetmp   #抓取有111的目錄名
+set Inc111_Folder = ("` cat $1/filetmp |  grep "/" `")
+set Inc111_Folder_count = $#Inc111_Folder
+while ( $j <= $Inc111_Folder_count )         #最後在列出包含111 或 包含"aaa與111"都有的目錄名
+ echo "$Original$Inc111_Folder[$j]"
+ @ j++
+end
+rm -f $1/filetmp
+
+

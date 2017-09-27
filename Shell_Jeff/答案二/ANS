@@ -1,0 +1,33 @@
+#!/bin/csh
+alias MATH  'set \!:1 = `echo "scale=6; \!:3-$" | bc -l`' #呼叫運算程式
+set WordFile =("` cat "$1" `")                            #將文字檔切割每一行到陣列中
+set LineNumbers = $#WordFile                              #計算文字檔的行數
+set ExportPath = "$2"                                     #儲存輸出目錄位置
+mkdir -p "$ExportPath"                                    #建立輸出目錄
+set InpuWord = "$3"                                 #儲存輸入字串
+set WordLength =  `echo "$InputWord" | wc -L `            #計算輸入字串的長度  
+set i = 1
+while ( $i <= "$WordLength" )                             #掃描輸入字串中的每一個字元
+  set CatchWord = ` echo "$InputWord" | cut -c"$i" `
+  set j = 1 
+  while ( $j <= "$LineNumbers")                           #找尋輸入字元在文字檔的位置
+    if ( (! -e "$ExportPath/$CatchWord") &&  ("$WordFile[$j]" == "CHAR $CatchWord")) then #條件一為判斷是否有重複的字元 
+      @ j++                                                                          #條件二為是否找到字元在文件檔的位置
+      while ( "$WordFile[$j]" != "ECHAR" )                                           #判斷該字元的圖線是否都掃完了
+        set Fx = "` echo $WordFile[$j] |  cut -d ' ' -f2 `"                          #X軸起始參數
+        MATH Fx = "$Fx" * 1000
+        set Fy = "` echo $WordFile[$j] | cut -d ' ' -f3 `"                           #Y軸起始參數
+        MATH Fy = "$Fy" * 1000
+        set Ex = "` echo $WordFile[$j] | cut -d ' ' -f4 `"                           #X軸終點參數
+        MATH Ex = "$Ex" * 1000
+        set Ey = "` echo $WordFile[$j] | cut -d ' ' -f5 `"                           #Y軸終點參數
+        MATH Ey = "$Ey" * 1000 
+        echo "$Fx $Fy $Ex $Ey" >> "$ExportPath/$CatchWord"                           #輸出到檔案
+        @ j++                                                             #while前j++目的為CHAR 的下一行
+      end
+      break
+    endif
+    @ j++
+  end
+  @ i++
+end
