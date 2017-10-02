@@ -1,0 +1,29 @@
+#!/bin/csh
+##edited by JEFF 2017/09/22
+cd $1
+ls -F > $1/filetmp
+set Original = `pwd`
+set Original = "$Original/"
+set i=1
+set Folder = ("` cat $1/filetmp | grep "/" `")
+set Folder_count = $#Folder
+while ( $i <= $Folder_count )
+ set j=1 
+ set Path_Folder = "$Original$Folder[$i]"
+ cd "$Path_Folder"
+ ls -F  > ./filetmp
+ set Docu = ("` cat ./filetmp | grep -v "/" `")
+ set Docu_count = $#Docu
+ while ( $j <= $Docu_count )
+  set Line_count = ` cat ./"$Docu[$j]" | grep -c "" ` #抓取行數
+  if ( "$Docu[$j]" != "filetmp" ) then    #防止暫存的檔案被顯示
+    if ( "$Line_count" == "4" ) then            #判斷行數大於四行的檔案將其顯示
+     echo "$Original$Folder[$i]$Docu[$j]"
+    endif
+  endif
+  @ j++
+ end
+ rm -f ./filetmp
+ @ i++
+end
+rm -f $1/filetmp

@@ -1,0 +1,19 @@
+#!/bin/csh
+##edited by JEFF 2017/09/25
+cd $1                                  #移動到輸入資料夾
+ls -dF *aaa* > $1/file_tmp             #列出包含aaa的目錄或檔案 到暫存檔案
+set Original = `pwd`                   #抓取目前位置
+set Original = "$Original/"            #加/
+set i=1                                #設立迴圈的參數
+set conform_file = ("` cat $1/file_tmp |  grep "/" `")
+set conform_count = $#conform_file #抓取列出的目錄的"個數" 排除檔案
+while ( $i <= $conform_count)  #以個數為要迴圈的次數
+ echo "$Original$conform_file[$i]" #把目前位置補在目錄前
+ @ i++ 
+end 
+rm -f $1/file_tmp #刪除暫存檔案
+
+
+
+
+

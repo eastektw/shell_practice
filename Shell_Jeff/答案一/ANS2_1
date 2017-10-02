@@ -1,0 +1,27 @@
+#!/bin/csh
+##edited by JEFF 2017/09/22
+cd $1
+ls -F > $1/filetmp  #列出所有的目錄或檔案 到暫存檔案
+set Original = `pwd`
+set Original = "$Original/"
+set i=1
+set Folder = ("` cat $1/filetmp | grep  "/" `")
+set Folder_count = $#Folder #只抓目錄的名稱個數
+while ( $i <= $Folder_count )               #掃描每個目錄
+ set j=1 
+ set Path_Folder = "$Original$Folder[$i]"
+ cd "$Path_Folder"                       #移動到掃描的目錄
+ ls -F  > ./filetmp               #列出該目錄的文件檔名稱
+ set docu =("` cat ./filetmp |grep -v "/" `")
+ set docu_count = $#docu
+ while ( $j <= "$docu_count" )
+  set Inc_aaa_docu_count = "` cat ./"$docu[$j]" | grep -c "aaa" `"
+  if ( "$Inc_aaa_docu_count" > "0" ) then
+  echo "$Original$Folder[$i]$docu[$j]"
+  endif
+  @ j++
+ end
+ rm -f ./filetmp
+ @ i++
+end
+rm -f $1/filetmp

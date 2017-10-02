@@ -1,0 +1,41 @@
+#!/bin/csh
+##edited by JEFF 2017/09/22
+cd $1
+ls -F > $1/filetmp
+set Original = `pwd`
+set Original = "$Original/"
+set i=1
+set Folder_count = `cat $1/filetmp | grep -c "/"  ` 
+while ( $i <= $Folder_count )
+ set Folder = "` cat $1/filetmp |  grep "/" | sed -n $i,$i'p' `"
+ set j=1 
+ set PATH_Folder = "$Original$Folder"
+ cd "$PATH_Folder"
+ ls -F  > ./filetmp
+ set Docu_count = ` cat ./filetmp | grep -vc "/"  `
+ while ( $j <= $Docu_count )
+  set Docu = "` cat ./filetmp | grep -v "/" | sed -n $j,$j'p' `"
+  set PATH_Docu = "./$Docu"
+  set Inc_1_Docu_count =  `cat "$PATH_Docu" | tail -n 1 | grep -c "1" ` 
+  if ( "$Docu" != "filetmp" ) then        
+    if ( "$Inc_1_Docu_count" > "0" ) then      
+     set Full_Line_count =  `cat  "$PATH_Docu" | tail -n 1 | wc -L `  
+     set k = 1
+     while ( "$k" <=  "$Full_Line_count")
+      set Check_1 =  "`cat  "$PATH_Docu" | tail -n 1 | cut -c"$k" `" 
+      if("$Check_1" != "1") then
+       break
+      endif
+      @ k++
+      if("$k" > "$Full_Line_count") then
+        echo "$Original$Folder$Docu"
+      endif
+     end
+    endif
+  endif
+  @ j++
+ end
+ rm -f ./filetmp
+ @ i++
+end
+rm -f $1/filetmp

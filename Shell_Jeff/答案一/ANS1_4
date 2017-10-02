@@ -1,0 +1,15 @@
+#!/bin/csh
+##edited by JEFF 2017/09/21
+cd $1
+ls -dF *1111 > $1/filetmp #抓取有1111結尾的目錄名
+set Original = `pwd`
+set Original = "$Original/"
+set i=1
+set Tail_1111_Folder = ( "`  cat $1/filetmp |  grep  "/"  `" )
+set Tail_1111_Folder_count = $#Tail_1111_Folder
+while ( $i <= $Tail_1111_Folder_count )
+ echo "$Original$Tail_1111_Folder[$i]"
+ @ i++
+end
+rm -f $1/filetmp
+
